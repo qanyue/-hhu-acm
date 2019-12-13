@@ -1,0 +1,88 @@
+/*在此题中或许可以学到一点排列组合的味道，先将快乐值从大到小排列，那么这样无需顾忌价格只要价格小于余下的钱，那么就可以直接买下，这样组合下来买到的一定
+是快乐值最多的*/
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct goods
+{
+    int price;
+    int fun;
+} gds;
+
+int main()
+{
+
+    int n = 0, m = 0, i = 0, s = 0, dep = 0; //n种 m钱 dep 留下的钱
+    scanf("%d %d", &n, &m);
+    gds gd[n];
+    gds temp;
+    int funs[n];//用于储存快乐值
+
+    for (i = 0; i < n; i++)
+    {
+        funs[i] = 0;
+    }
+    for (i = 0; i < n; i++)
+    {
+        scanf("%d", &gd[i].price);
+        scanf("%d", &gd[i].fun);
+    }
+    
+    int j = 0;
+
+    for (i = 0; i < n - 1; i++)//将零食按快乐值从小到大排列
+    {
+        for (j = i + 1; j < n; j++)
+        {
+            if (gd[j].fun > gd[i].fun)
+            {
+                temp = gd[i];
+                gd[i] = gd[j];
+                gd[j] = temp;
+            }
+        }
+    }
+
+    gds gd2[n];
+    int count = 0;
+
+
+    for (s = 1; s <= n; s++)//这层循环是为了从一个到n个零食的组合
+    {
+        dep = m;//确保每个组合开始是余额是满的
+        for (i = 0; i < n; i++)
+        {
+            gd2[i] = gd[i];
+        }
+        for (j = 1; j <= s; j++)
+        {
+            for (i = 0; i < n; i++)
+            {
+                if (gd2[i].price <= dep && gd2[i].fun != 0)
+                {
+                    funs[count] = funs[count] + gd2[i].fun;
+                    dep = dep - gd[i].price;
+                    gd2[i].fun = 0;
+                    break;
+                }
+            }
+        }
+        count++;
+    }
+
+    int max=0;
+    for ( i = 0; i < n; i++)
+    {
+        if (funs[i]>=max)
+        {
+            max=funs[i];
+        }
+        
+    }
+    
+    printf("%d\n",max);
+
+
+    system("pause");
+    return 0;
+}
